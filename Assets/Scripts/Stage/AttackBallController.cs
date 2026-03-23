@@ -1,11 +1,13 @@
+using System.ComponentModel;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AttackBallController : MonoBehaviour
 {
     public StageManager stage;
     Rigidbody2D rbody;
-    Vector3 forceDirection;
+    Vector2 forceDirection;
     Vector3 beforePosition;
 
     float speed = 3.0f;
@@ -20,7 +22,7 @@ public class AttackBallController : MonoBehaviour
     };
 
     private float blinkTime = 3.0f;
-    private bool isBlink = false;
+    private bool isBlink = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -29,39 +31,48 @@ public class AttackBallController : MonoBehaviour
         isReturnH = false;
         isReturnV = false;
         rbody = GetComponent<Rigidbody2D>();
-        forceDirection = Vector3.down;
+        forceDirection = Vector2.down;
         beforePosition = transform.position;
+
+        isBlink = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // ゲーム中出なければ、何もせずに終了する
+        // ゲーム中でなければ、何もせずに終了する
         if (stage.InGame == false) return;
 
         // 開始後BlinkTimeの時間だけ点滅する。点滅している間は移動処理を実施しない。
         if (isBlink == true)
         {
-            if (Mathf.Sin(Time.time * 0.2f) > 0.5f)
+            if (Mathf.Sin(Time.time * 10f) > 0)
             {
-                GetComponent<SpriteRenderer>().enabled = false;
+                foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
+                {
+                    s.enabled = false;
+                }
             }
             else
             {
-                GetComponent<SpriteRenderer>().enabled |= true;
+                foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
+                {
+                    s.enabled = true;
+                }
             }
 
             blinkTime -= Time.deltaTime;
 
             if (blinkTime <= 0)
             {
+                foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
+                {
+                    s.enabled = true;
+                }
                 isBlink = false;
-                GetComponent<SpriteRenderer>().enabled = true;
             }
             return;
         }
-
-        Debug.Log("forceDirection " + forceDirection);
 
         if (isReturnH)
         {
@@ -79,7 +90,14 @@ public class AttackBallController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rbody.linearVelocity = forceDirection * speed;
+        if (isBlink == false)
+        {
+            if (rbody.linearVelocity != forceDirection * speed)
+            {
+                // Debug.Log("forceDirection" + forceDirection);
+                rbody.linearVelocity = forceDirection * speed;
+            }
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -88,17 +106,13 @@ public class AttackBallController : MonoBehaviour
 
         float moveNum = beforePosition.x - transform.position.x;
 
-        Debug.Log(collision.GetContact(0).point);
+        // Debug.Log("Collision " + collision.gameObject.tag + ">> " + targetTag.Contains(tag));
 
         if (moveNum > 0)
         {
             //Debug.Log(moveNum);
-            forceDirection += new Vector3(moveNum * 10, 0, 0);
-
-            if (forceDirection.x > 1f) forceDirection = new Vector3(1f, forceDirection.y, 0);
+            forceDirection = new Vector2(moveNum * 10, forceDirection.y).normalized;
         }
-
-        Debug.Log("Collision " + collision.gameObject.tag + ">> " + targetTag.Contains(tag));
 
         if (targetTag.Contains(tag))
         {
