@@ -6,6 +6,8 @@ public class BlockController : MonoBehaviour
     public BlockGenerator blockGenerator;
     public int scoreVaule = 0;
 
+    public bool isBloken = true;
+
     public void SetStageManager(StageManager sm)
     {
         stage = sm;
@@ -18,8 +20,12 @@ public class BlockController : MonoBehaviour
 
     public void BreakBlock()
     {
-        //Debug.Log("BreakBlock");
-        blockGenerator.BrokenBlock();
-        Destroy(gameObject);
+        if (isBloken)
+        {
+            //Debug.Log("BreakBlock");
+            blockGenerator.BrokenBlock(transform.position);
+
+            Destroy(gameObject);
+        }
     }
 }

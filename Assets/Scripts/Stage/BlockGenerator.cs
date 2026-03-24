@@ -13,10 +13,11 @@ public class BlockGenerator : MonoBehaviour
     // BlockのScale　X：1.67、Y：3.35
     // Blockを置くエリア　X：-2～2（8マス）、Y：0.0～4.5（10マス）
 
-    public GameObject blockSprite_Red;
-    public GameObject blockSprite_Blue;
-    public GameObject blockSprite_Green;
-    public GameObject blockSprite_White;
+    public GameObject blockPrefub_Red;
+    public GameObject blockPrefub_Blue;
+    public GameObject blockPrefub_Green;
+    public GameObject blockPrefub_White;
+    public GameObject blockPrefub_UnBreak;
 
     private static int blockNum;        // ステージに配置されたブロックの数
     private static int currentBlockNum; // 現在ステージに残っているブロックの数
@@ -36,8 +37,7 @@ public class BlockGenerator : MonoBehaviour
         string stageName = SceneManager.GetActiveScene().name;
         int[,] stageData = LoadStage(stageName);
 
-        Debug.Log(stageData.GetLength(0));
-        Debug.Log(stageData.GetLength(1));
+        Debug.Log("縦：" + stageData.GetLength(0) + " × 横：" + stageData.GetLength(1));
 
         CreateStage(stageData);
 
@@ -77,6 +77,7 @@ public class BlockGenerator : MonoBehaviour
     {
         // 以下の色でブロックを生成する
         // 1：赤、2：青、3：緑、4：白
+        // 9：壊せないブロック（黒）
 
         GameObject instantPrefub = null;
         for (int i = 0; i < stageDeta.GetLength(0); i++)
@@ -87,23 +88,27 @@ public class BlockGenerator : MonoBehaviour
                 {
                     case 1:
                         // 赤
-                        instantPrefub = blockSprite_Red;
+                        instantPrefub = blockPrefub_Red;
                         blockNum++;
                         break;
                     case 2:
                         // 青
-                        instantPrefub = blockSprite_Blue;
+                        instantPrefub = blockPrefub_Blue;
                         blockNum++;
                         break;
                     case 3:
                         // 緑
-                        instantPrefub = blockSprite_Green;
+                        instantPrefub = blockPrefub_Green;
                         blockNum++;
                         break;
                     case 4:
                         // 白
-                        instantPrefub = blockSprite_White;
+                        instantPrefub = blockPrefub_White;
                         blockNum++;
+                        break;
+                    case 9:
+                        // 壊せないブロック
+                        instantPrefub = blockPrefub_UnBreak;
                         break;
                     case 0:
                     default:
@@ -120,7 +125,7 @@ public class BlockGenerator : MonoBehaviour
         }
     }
 
-    public void BrokenBlock()
+    public void BrokenBlock(Vector3 pos)
     {
         currentBlockNum--;
         if (currentBlockNum == 0)

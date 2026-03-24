@@ -7,6 +7,8 @@ TagManager:
   - Block
   - Ball
   - PlayerBar
+  - Wall
+  - Dead
   layers:
   - Default
   - TransparentFX

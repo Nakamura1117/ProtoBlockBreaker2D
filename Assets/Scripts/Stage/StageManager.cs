@@ -1,4 +1,4 @@
-using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -9,8 +9,13 @@ public class StageManager : MonoBehaviour
         GameOver
     }
 
+    public PlayerController playerBar;
     public GameObject ballPrefub;
     public readonly int defaultLife = 3;
+
+    public TextMeshProUGUI scoreTxt;
+
+    public GameObject lifeImage;
 
     private EndStatusName endStatus;
 
@@ -37,13 +42,16 @@ public class StageManager : MonoBehaviour
     }
 
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         life = defaultLife;
         inGame = false;
         Time.timeScale = 0;
+
+        GameObject ball = Instantiate(ballPrefub, new Vector3(0, -1, 0), Quaternion.identity);
+        ball.GetComponent<AttackBallController>().SetStageManager(GetComponent<StageManager>());
+        ball.GetComponent<AttackBallController>().SetPlayerBar(playerBar);
     }
 
     // Update is called once per frame
@@ -59,6 +67,7 @@ public class StageManager : MonoBehaviour
         {
             GameObject ball = Instantiate(ballPrefub, new Vector3(0, -1, 0), Quaternion.identity);
             ball.GetComponent<AttackBallController>().SetStageManager(GetComponent<StageManager>());
+            ball.GetComponent<AttackBallController>().SetPlayerBar(playerBar);
         }
     }
 

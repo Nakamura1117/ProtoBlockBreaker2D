@@ -355,10 +355,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab8c4c6985077f14d9646687abc6e821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  playerBar: {fileID: 2136558394}
+  playerBar: {fileID: 0}
   ballPrefub: {fileID: 1031688111163267563, guid: cd74c0465d650884985b2de03b31417d, type: 3}
   scoreTxt: {fileID: 1065647055}
-  lifeImage: {fileID: 2086433527}
+  lifeImage: {fileID: 0}
 --- !u!114 &619696330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -835,6 +835,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2086433529}
   - {fileID: 1054133479}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1243,7 +1244,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1933496696}
   - component: {fileID: 1933496697}
-  m_Layer: 16
+  m_Layer: 0
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1556,7 +1557,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &2086433528
 SpriteRenderer:
   serializedVersion: 2
@@ -1625,11 +1626,11 @@ Transform:
   m_GameObject: {fileID: 2086433527}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -540, y: -1170, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1313889209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2136558391
 GameObject:
@@ -1642,9 +1643,9 @@ GameObject:
   - component: {fileID: 2136558392}
   - component: {fileID: 2136558393}
   - component: {fileID: 2136558394}
-  m_Layer: 16
+  m_Layer: 0
   m_Name: PlayerBar
-  m_TagString: PlayerBar
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1722,6 +1723,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 246366043320137602, guid: cd74c0465d650884985b2de03b31417d, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 246366043320137602, guid: cd74c0465d650884985b2de03b31417d, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 762203587510172488, guid: cd74c0465d650884985b2de03b31417d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1766,10 +1775,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AttackBall
       objectReference: {fileID: 0}
-    - target: {fileID: 1031688111163267563, guid: cd74c0465d650884985b2de03b31417d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4184522541882910067, guid: cd74c0465d650884985b2de03b31417d, type: 3}
       propertyPath: stage
       value: 
@@ -1787,8 +1792,7 @@ SceneRoots:
   - {fileID: 1432727802}
   - {fileID: 1691538387}
   - {fileID: 2136558392}
+  - {fileID: 4690062277247006192}
   - {fileID: 619696328}
   - {fileID: 1313889209}
   - {fileID: 1272223589}
-  - {fileID: 4690062277247006192}
-  - {fileID: 2086433529}
