@@ -2,9 +2,23 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
 
     public static int totalScore;
     public int stageScore;
+
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,11 +30,5 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-    }
-
-    public void ScoreUp(int score)
-    {
-        stageScore += score;
-        Debug.Log("スコアが加算された：" + score);
     }
 }
