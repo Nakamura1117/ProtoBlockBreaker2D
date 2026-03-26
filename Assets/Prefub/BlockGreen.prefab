@@ -151,5 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841b8bcdca0a94b48a5680a52d9a7b4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockController
-  scoreVaule: 800
-  gm: {fileID: 0}
+  stage: {fileID: 0}
+  blockGenerator: {fileID: 0}
+  scoreVaule: 1200
+  isBloken: 1
