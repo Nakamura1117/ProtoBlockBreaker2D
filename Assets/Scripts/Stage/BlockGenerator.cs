@@ -7,12 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class BlockGenerator : MonoBehaviour
 {
-    public StageManager stage;
+    public StageManager stage;  // ステージマネージャー
 
     // １マス　0.5、0.5（横長）　最大　80個（8×10）
     // BlockのScale　X：1.67、Y：3.35
     // Blockを置くエリア　X：-2～2（8マス）、Y：0.0～4.5（10マス）
 
+    // 設定するブロック５種類
     public GameObject blockPrefub_Red;
     public GameObject blockPrefub_Blue;
     public GameObject blockPrefub_Green;
@@ -23,17 +24,17 @@ public class BlockGenerator : MonoBehaviour
     private static int currentBlockNum; // 現在ステージに残っているブロックの数
 
     // ブロック配置の始点（左上）
-    float genTop = 4.5f;
-    float genLeft = -2.0f;
+    public float genTop = 4.5f;
+    public float genLeft = -2.0f;
 
     public const int sizeX = 8, sizeY = 10;     // ステージのサイズ
-    float blockWidth = 0.5f, blockHeight = 0.5f;    // ブロックのサイズ
+    public float blockWidth = 0.5f, blockHeight = 0.5f;    // ブロックのサイズ
 
-
-    private void Awake()
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
         transform.position = new Vector2(genLeft, genTop);
-        // ステージ名はシーン名と合わせる
+        // ステージのファイル名はシーン名と合わせる
         string stageName = SceneManager.GetActiveScene().name;
         int[,] stageData = LoadStage(stageName);
 
@@ -42,11 +43,6 @@ public class BlockGenerator : MonoBehaviour
         CreateStage(stageData);
 
         currentBlockNum = blockNum;
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
     }
 
     // Update is called once per frame
@@ -125,6 +121,7 @@ public class BlockGenerator : MonoBehaviour
         }
     }
 
+    // ブロックが壊れた際に、破壊処理とカウントを実施する
     public void BrokenBlock(Vector3 pos)
     {
         currentBlockNum--;

@@ -24,7 +24,7 @@ public class BlockController : MonoBehaviour
         {
             //Debug.Log("BreakBlock");
             blockGenerator.BrokenBlock(transform.position);
-
+            stage.UpScore(scoreVaule);
             Destroy(gameObject);
         }
     }
