@@ -20,8 +20,8 @@ public class BlockGenerator : MonoBehaviour
     public GameObject blockPrefub_White;
     public GameObject blockPrefub_UnBreak;
 
-    private static int blockNum;        // ステージに配置されたブロックの数
-    private static int currentBlockNum; // 現在ステージに残っているブロックの数
+    public bool isInitialize = false; // 初期化処理管理フラグ
+
 
     // ブロック配置の始点（左上）
     public float genTop = 4.5f;
@@ -29,6 +29,9 @@ public class BlockGenerator : MonoBehaviour
 
     public const int sizeX = 8, sizeY = 10;     // ステージのサイズ
     public float blockWidth = 0.5f, blockHeight = 0.5f;    // ブロックのサイズ
+
+    private int blockNum;        // ステージに配置されたブロックの数
+    private int currentBlockNum; // 現在ステージに残っているブロックの数
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,15 +46,11 @@ public class BlockGenerator : MonoBehaviour
         CreateStage(stageData);
 
         currentBlockNum = blockNum;
+        stage.GameStart();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (stage.IsStart == false) stage.GameStart();
-    }
 
-    int[,] LoadStage(string stageName, int x = sizeX, int y = sizeY)
+    private int[,] LoadStage(string stageName, int x = sizeX, int y = sizeY)
     {
         // ステージの２次元配列データを読み込んでリターンする（デフォルトは8×10）
         string filePath = Path.Combine(Application.streamingAssetsPath, "Stage", stageName);
@@ -69,7 +68,7 @@ public class BlockGenerator : MonoBehaviour
         return stage;
     }
 
-    void CreateStage(int[,] stageDeta)
+    private void CreateStage(int[,] stageDeta)
     {
         // 以下の色でブロックを生成する
         // 1：赤、2：青、3：緑、4：白
@@ -115,17 +114,19 @@ public class BlockGenerator : MonoBehaviour
                     (blockWidth * j) + genLeft,     // 始点Xを加算することで、生成を左から開始する
                     -(blockHeight * i) + genTop,    // 始点Yを加算することで上から生成を開始する。上から順番に生成する都合、マイナスにしないと上下反転してしまう。
                     0);
-                go.GetComponent<BlockController>().SetStageManager(stage);
-                go.GetComponent<BlockController>().SetBlockGen(GetComponent<BlockGenerator>());
+                go.GetComponent<BlockController>().SetStageManager(stage);  // 生成したブロックに、ステージマネージャーを設定
+                go.GetComponent<BlockController>().SetBlockGen(GetComponent<BlockGenerator>()); // 生成したブロックにブロックマネージャーを設定
             }
         }
     }
 
     // ブロックが壊れた際に、破壊処理とカウントを実施する
-    public void BrokenBlock(Vector3 pos)
+    public void BrokenBlock()
     {
-        currentBlockNum--;
-        if (currentBlockNum == 0)
+        SoundManager.Instance.PlaySE(SoundManager.Instance.seBreakBlock);   // ブロックが壊れるSEを鳴らす
+        currentBlockNum--;  // 残りブロック数を減らす
+        // ブロック数が０になったらゲームクリア
+        if (currentBlockNum <= 0)
         {
             stage.GameClear();
         }

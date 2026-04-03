@@ -1,17 +1,16 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class Utility : MonoBehaviour
 {
-
+    // 複数のクラスから使用するツールをまとめたクラス。singletonで実装する
     public static Utility Instance { get; private set; }
 
     void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
 
@@ -19,13 +18,20 @@ public class Utility : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    // 現在のシーンを再読み込み
+    public void MoveScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
+    // 指定されたシーンを読み込む（シーンマネージャーをできるだけほかのクラスで読み込まないように）
     public void MoveScene(string name)
     {
         // 引数で指定されたシーンへ移動
         SceneManager.LoadScene(name);
     }
 
+    // ゲームを終了する（ほかのシーンからまとめて分かりやすくするように）
     public void QuitGame()
     {
         // ゲーム終了
@@ -42,7 +48,7 @@ public class Utility : MonoBehaviour
     // 注意：２Ｄゲームでのみ有効。３Ｄだと消えない
     private IEnumerator OjbRotateOutCol(GameObject obj, float s)
     {
-        Debug.Log("ObjRotateOutCol");
+        // Debug.Log("ObjRotateOutCol");
         float maxAngle = 90;    // 回転する最大を設定
         float r = 0;    // 現在の回転量を保持する用の変数
 
@@ -52,11 +58,9 @@ public class Utility : MonoBehaviour
         // 指定された秒数の1/20ずつ回転していく
         for (float remainingTime = s; remainingTime > 0; remainingTime -= frame)
         {
-            Debug.Log("remainingTime" + remainingTime);
             // オブジェクトをＹ軸で回転する
             obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.x, r, obj.transform.rotation.z);
             r += perAngle;   // 角度の変数を更新する
-            Debug.Log("r" + r);
             yield return new WaitForSeconds(frame);  // 指定された秒数sの1/10だけ処理を止める
         }
     }
@@ -69,7 +73,7 @@ public class Utility : MonoBehaviour
     // 指定したオブジェクトを指定した秒数、指定した間隔で少しずつ移動する
     private IEnumerator ObjMoveCol(GameObject obj, float time, Vector3 vec, float frame = 0.2f)
     {
-        Debug.Log("ObjMoveCol");
+        // Debug.Log("ObjMoveCol");
         float cnt = time;
         // 毎frame、ベクター量２で移動を実施
         while (cnt >= 0)
@@ -90,7 +94,7 @@ public class Utility : MonoBehaviour
     // 指定されたオブジェクトobjを指定された時間time、指定された間隔frameで透明にする
     private IEnumerator ForTransparentCol(GameObject obj, float time, float frame = 0.2f)
     {
-        Debug.Log("ForTransparentCol");
+        // Debug.Log("ForTransparentCol");
         Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
         float per = 1 / (time / frame);
         bool finFlg = true;

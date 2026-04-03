@@ -15,7 +15,7 @@ public class AttackBallController : MonoBehaviour
     public float speed = 7.0f;
     public float moveValLimit = 0.5f;   // バーの移動量計算で使用する
     public float revideVecVal = 0.5f;   // ボールの縦移動の最低値
-    public float accelLimit = 10f; // ボール加速の上限
+    public float accelLimit = 3.0f; // ボール加速の上限
 
     private PlayerController playerBar; // プレイヤーのバー情報
     private Rigidbody2D rbody;  // 自身のRigidbody情報
@@ -34,7 +34,7 @@ public class AttackBallController : MonoBehaviour
     private bool isBlink = true;    // 点滅管理フラグ
     private bool isReturnH = false; // 横方向の反射フラグ
     private bool isReturnV = false; // 縦方向の反射フラグ
-    private float accel = 0.0f; // 加速値
+    private float accel = 1.0f; // 加速値
 
     private float cntTime;  // 経過時間カウント用変数
 
@@ -42,15 +42,15 @@ public class AttackBallController : MonoBehaviour
     void Start()
     {
         // 初期値設定
-        transform.position = new Vector3(0, -1, 0);
-        isReturnH = false;
-        isReturnV = false;
-        rbody = GetComponent<Rigidbody2D>();
-        forceVector = Vector2.down;
-        targetTag = new List<string>(defaultTargetTag);
-        accel = 0.0f;
-        cntTime = 0;
-        isBlink = true;
+        transform.position = new Vector3(0, -1, 0);     // ボールの初期位置
+        isReturnH = false;  // 横方向の反射判定
+        isReturnV = false;  // 縦方向の反射判定
+        rbody = GetComponent<Rigidbody2D>();    // ボール自体のRigidbody
+        forceVector = Vector2.down;     // ボールが移動する方向
+        targetTag = new List<string>(defaultTargetTag);     // ぶつかったときに反射するオブジェクトのタグ
+        accel = 1.0f;   // 加速度（１の場合はそのまま）
+        cntTime = 0;    // カウント用の変数
+        isBlink = true; // 点滅中か判定する変数。スタートした際はtrue
     }
 
     // Update is called once per frame
@@ -62,8 +62,10 @@ public class AttackBallController : MonoBehaviour
         // 開始後BlinkTimeの時間だけ点滅する。点滅している間は移動処理を実施しない。
         if (isBlink == true)
         {
+            // sinを使用して点滅させる
             if (Mathf.Sin(Time.time * 10f) > 0)
             {
+                // このオブジェクトと子オブジェクトを繰り返してすべて非表示にする
                 foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
                 {
                     s.enabled = false;
@@ -71,14 +73,16 @@ public class AttackBallController : MonoBehaviour
             }
             else
             {
+                // このオブジェクトと子オブジェクトを繰り返しですべて表示する
                 foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
                 {
                     s.enabled = true;
                 }
             }
 
-            blinkTime -= Time.deltaTime;
+            blinkTime -= Time.deltaTime;    // 点滅の残り時間を減らす
 
+            // 点滅の時間が終わった際に、表示させる
             if (blinkTime <= 0)
             {
                 foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
@@ -89,8 +93,10 @@ public class AttackBallController : MonoBehaviour
             }
             return;
         }
+
         // 経過時間をカウント
         cntTime += Time.deltaTime;
+        // 0.1秒カウントしたらリセットする
         if (cntTime >= 0.1f)
         {
             cntTime = 0;
@@ -114,8 +120,8 @@ public class AttackBallController : MonoBehaviour
             isReturnV = false;
         }
 
-        // 力の方向＋スピード＋加速値　※加速値はブロック以外で反射した時に加算
-        rbody.linearVelocity = forceVector * speed + new Vector2(accel, accel);
+        // 力の方向×スピード×加速値　※加速値はブロック以外で反射した時に加算
+        rbody.linearVelocity = forceVector * speed * accel;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -129,7 +135,7 @@ public class AttackBallController : MonoBehaviour
         // 衝突したタグが反射対象のタグか確認する
         if (targetTag.Contains(tag))
         {
-            accel += 0.1f;  // 何かに当たった時に加速する
+            accel += 0.05f;  // 何かに当たった時に加速する
             if (accel > accelLimit) accel = accelLimit; // 加速上限
 
             // バーに当たった際に、バーの移動に応じて横方向に力を加える
@@ -168,7 +174,7 @@ public class AttackBallController : MonoBehaviour
             if (tag == "Block")
             {
                 collision.gameObject.GetComponent<BlockController>().BreakBlock();
-                accel = 0.0f;   // ブロックに当たった時、加速をリセットする
+                accel = 1.0f;   // ブロックに当たった時、加速をリセットする
             }
 
             // 当たった位置を取得する（絶対座標を自身から見た座標にする）
@@ -184,13 +190,15 @@ public class AttackBallController : MonoBehaviour
             {
                 isReturnV = true;
             }
+
+            SoundManager.Instance.PlaySE(SoundManager.Instance.seBallContact);  // ボールが反射するものに当たった時にSEを鳴らす
         }
 
         // タグ「Dead」に触れたらボールが落ちた判定
         if (tag == "Dead")
         {
-            stage.BallDrop();
-            Destroy(gameObject);
+            stage.BallDrop();   // ステージマネージャーのボールが落ちたメソッドを実行
+            Destroy(gameObject);    // このオブジェクトを破棄
         }
     }
 

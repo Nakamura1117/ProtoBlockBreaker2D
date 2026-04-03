@@ -1,11 +1,12 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageManager : MonoBehaviour
 {
     // ゲーム終了時のステータス管理用（switchで使用するため）
-    enum EndStatusName
+    public enum EndStatusName
     {
         GameClear,  // ゲームクリア
         GameOver    // ゲームオーバー
@@ -19,13 +20,15 @@ public class StageManager : MonoBehaviour
 
     public GameObject UI;   // UI管理のオブジェクト
     public TextMeshProUGUI scoreTxt;    // スコア表示用テキスト
-
-    public GameObject objGameClear;     // ゲームクリア時に表示する画像
-    public GameObject objGameOver;     // ゲームオーバー時に表示する画像
+    public GameObject ui_Menu;
 
     public GameObject spriteLife;    // 演出に使用するハートの画像
     public GameObject ui_LifeGage;  // 残機をUIに表示するための目印
     public GameObject ui_lifePrefub;    // UIに表示する残機の元画像
+
+    public GameObject objGameClear;     // ゲームクリア時に表示する画像
+    public GameObject objGameOver;     // ゲームオーバー時に表示する画像
+
     private GameObject[] ui_lifeObj;    // UIで残機を表示するための実態（配列）
 
     private int currentScore;   // ステージのスコア管理用
@@ -34,8 +37,9 @@ public class StageManager : MonoBehaviour
         get { return currentScore; }
     }
 
+    public string Name { get { return SceneManager.GetActiveScene().name; } }
     private EndStatusName endStatus;    // 終了ステータスを保持する用の変数
-
+    public EndStatusName EndStatus { get { return endStatus; } }
     private int maxLife = 5;    // 残機の上限
 
     private int life = 3;   // 現在の残機
@@ -65,6 +69,7 @@ public class StageManager : MonoBehaviour
         Time.timeScale = 0; // スタート処理が終わるまで、ゲーム時間を止めておく
         inGame = false; // スタート処理が終わるまで、ゲーム中ではないとフラグを設定
 
+        ui_Menu.SetActive(false);    // メニューを無効化する
         life = defaultLife; // 残機を初期値に設定する
         ui_lifeObj = new GameObject[life];  // 残機表示用の配列を生成
         float setPosX = 0;  // 残機表示の位置の値を初期化
@@ -107,7 +112,9 @@ public class StageManager : MonoBehaviour
         // ゲーム中なら処理を実行
         if (inGame)
         {
+            SoundManager.Instance.PlaySE(SoundManager.Instance.seBallDrop);
             LifeDown();     // 残機を減らす
+
             GameObject ball = Instantiate(ballPrefub, defaultBallPos, Quaternion.identity);      // 新しいボールを生成する
             ball.GetComponent<AttackBallController>().SetStageManager(GetComponent<StageManager>());    // 生成したボールにStageManagerの情報をセットする
             ball.GetComponent<AttackBallController>().SetPlayerBar(playerBar);      // 生成したボールにバーの情報をセットする
@@ -176,6 +183,7 @@ public class StageManager : MonoBehaviour
         {
             // Debug.Log("GameClear");
             endStatus = EndStatusName.GameClear;
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.bgmGameClear);
             StartCoroutine(GameEnd());
         }
     }
@@ -187,6 +195,7 @@ public class StageManager : MonoBehaviour
         {
             // Debug.Log("GameOver");
             endStatus = EndStatusName.GameOver;
+            SoundManager.Instance.PlayBGM(SoundManager.Instance.bgmGameOver);
             StartCoroutine(GameEnd());
         }
     }
@@ -201,9 +210,11 @@ public class StageManager : MonoBehaviour
         {
             case EndStatusName.GameClear:
                 display = Instantiate(objGameClear, Vector3.zero, Quaternion.identity);
+                GameManager.Instance.GameSave(Name, true, Score);
                 break;
             case EndStatusName.GameOver:
                 display = Instantiate(objGameOver, Vector3.zero, Quaternion.identity);
+                GameManager.Instance.GameSave(Name, false, Score);
                 break;
         }
 
@@ -231,6 +242,8 @@ public class StageManager : MonoBehaviour
                 renderer.transform.localScale = Vector3.Lerp(beforeScale, afterScale, f);
                 yield return new WaitForSecondsRealtime(f);     // timeScaleが０になった後に動いてほしいので、WaitForSecondsRealtimeを使用する
             }
+            yield return new WaitForSecondsRealtime(0.5f);
+            ui_Menu.SetActive(true);    // メニューを有効化する
         }
     }
 }
