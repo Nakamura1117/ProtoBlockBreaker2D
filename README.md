@@ -11,19 +11,22 @@
   ステージ選択画面からステージを選択して遊びます。全５ステージ。
 
 ### デモプレイ（録画にはOBS Studioを使用）
-※ 実機環境がないため、Unity上のエミュレーターで実施
+※ 実機環境がないため、Unity上のエミュレーターで実施    
 https://github.com/user-attachments/assets/cf36f4c3-5196-4f0b-ad37-1a57bdbe6cf4
 
 
 #### 画面
-- タイトル画面
-  <img width="281" height="530" alt="image" src="https://github.com/user-attachments/assets/37d81d2a-fc39-425a-bee5-60cd5ed02491" />
+- タイトル画面    
+<img width="281" height="530" alt="image" src="https://github.com/user-attachments/assets/37d81d2a-fc39-425a-bee5-60cd5ed02491" />
 
-- ステージ選択画面
-  <img width="295" height="535" alt="image" src="https://github.com/user-attachments/assets/0a2ab36b-d6d6-4026-8948-0a1f0dc2d576" />
 
-- ステージ画面
-  <img width="276" height="536" alt="image" src="https://github.com/user-attachments/assets/df9b5a1f-2f16-445d-bda8-03e0e0634f1a" />
+- ステージ選択画面    
+<img width="295" height="535" alt="image" src="https://github.com/user-attachments/assets/0a2ab36b-d6d6-4026-8948-0a1f0dc2d576" />
+
+
+- ステージ画面    
+<img width="276" height="536" alt="image" src="https://github.com/user-attachments/assets/df9b5a1f-2f16-445d-bda8-03e0e0634f1a" />
+
 
 
 ### ステージ説明
