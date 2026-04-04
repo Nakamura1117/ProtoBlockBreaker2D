@@ -7,22 +7,38 @@
 
 ## 作品の概要
 
-- ２Ｄブロック崩しです。
+- Android向け２Ｄブロック崩しです。
   ステージ選択画面からステージを選択して遊びます。全５ステージ。
 
-### デモプレイ
+### デモプレイ（録画にはOBS Studioを使用）
+※ 実機環境がないため、Unity上のエミュレーターで実施
+https://github.com/user-attachments/assets/cf36f4c3-5196-4f0b-ad37-1a57bdbe6cf4
 
 
-#### 画面説明
+#### 画面
+- タイトル画面
+  <img width="281" height="530" alt="image" src="https://github.com/user-attachments/assets/37d81d2a-fc39-425a-bee5-60cd5ed02491" />
+
+- ステージ選択画面
+  <img width="295" height="535" alt="image" src="https://github.com/user-attachments/assets/0a2ab36b-d6d6-4026-8948-0a1f0dc2d576" />
+
+- ステージ画面
+  <img width="276" height="536" alt="image" src="https://github.com/user-attachments/assets/df9b5a1f-2f16-445d-bda8-03e0e0634f1a" />
+
 
 ### ステージ説明
-| 参考画像 |  名称  | 説明                                                                                               |
+| 参考画像 |  名称  | 説明|
 | :------- | :--------: | :------------------------------------------------------------------------------------------------- |
-||    ブロック    | ブロックを壊すことでスコアが上がります。ブロックの色で上昇量が変化。一部壊せないブロックも。                            |
-||  ボール  | ボールは何かに当たったら反射します。バーが動いている時に当たると、反射する角度が変わるかも？ |
-| |  プレイヤーバー  | プレイヤーがタップした位置に移動します。下の△には当たり判定がないので注意。                                          |
-|  | ライフ | 残機。３回ボールを落としたらゲームオーバーです。2回まではセーフ。                                              |
-||     スコア     |  ブロック破壊で増える評価値です。特に時間とかは関係ありません。                                                            |
+|<img width="151" height="154" alt="image" src="https://github.com/user-attachments/assets/5fb9b036-88a6-487e-b8e8-8f3032f5b544" />
+|    ブロック    | ブロックを壊すことでスコアが上がります。ブロックの色で上昇量が変化。一部壊せないブロックも。|
+|<img width="32" height="34" alt="image" src="https://github.com/user-attachments/assets/f251eb2e-8cf9-415f-9892-683189bf4cdc" />
+|  ボール  | ボールは何かに当たったら反射します。バーが動いている時に当たると、反射する角度が変わるかも？ |
+| <img width="120" height="77" alt="image" src="https://github.com/user-attachments/assets/64d55d59-5739-459c-8837-a113d51197a7" />
+|  プレイヤーバー  | プレイヤーがタップした位置に移動します。下の△には当たり判定がないので注意。|
+| <img width="141" height="29" alt="image" src="https://github.com/user-attachments/assets/d63f844a-6734-4290-bf5b-8eb577965781" />
+ | ライフ | 残機。３回ボールを落としたらゲームオーバーです。2回まではセーフ。  |
+|<img width="116" height="27" alt="image" src="https://github.com/user-attachments/assets/3396cb21-3da8-4369-8284-68b14656c492" />
+|     スコア     |  ブロック破壊で増える評価値です。特に時間とかは関係ありません。  |
 
 ## プログラム
 
@@ -30,9 +46,10 @@
 
 ## 使用技術・ツール
 
-- 使用言語:C#
-- 開発ツール:Unity Editor 6000.3.5f2
-  　　　　　 Microsoft Visual Studio Community 2026（18.3.1）
+- 使用言語：C#
+- 開発ツール：Unity Editor 6000.3.5f2
+  　　　　　  Microsoft Visual Studio Code 1.113.0
+             SourceTree Version 3.4.27
 
 ## 参考書籍・使用アセット
 
