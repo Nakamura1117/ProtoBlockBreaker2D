@@ -1,4 +1,5 @@
 # Proto_BlockBreaker2D
+<img width="284" height="546" alt="image" src="https://github.com/user-attachments/assets/342cfe93-7f5c-4a68-bc37-aa5428563132" />
 
 ## はじめに
 
