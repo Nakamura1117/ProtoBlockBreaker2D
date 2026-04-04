@@ -50,7 +50,7 @@
 
 - 使用言語：C#
 - 開発ツール：Unity Editor 6000.3.5f2    
-  　　　　　  Microsoft Visual Studio Code 1.113.0    
+             Microsoft Visual Studio Code 1.113.0    
              SourceTree Version 3.4.27    
 
 ## 参考書籍・使用アセット
