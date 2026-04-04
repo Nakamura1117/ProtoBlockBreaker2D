@@ -12,7 +12,11 @@
 
 ### デモプレイ（録画にはOBS Studioを使用）
 ※ 実機環境がないため、Unity上のエミュレーターで実施    
-https://github.com/user-attachments/assets/cf36f4c3-5196-4f0b-ad37-1a57bdbe6cf4
+
+
+<video src="https://github.com/user-attachments/assets/43ea2842-d35e-46bd-89bd-4e3ad8970c9d" controls="true"></video>
+
+
 
 
 #### 画面
