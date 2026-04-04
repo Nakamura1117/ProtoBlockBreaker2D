@@ -36,16 +36,11 @@
 ### ステージ説明
 | 参考画像 |  名称  | 説明|
 | :------- | :--------: | :------------------------------------------------------------------------------------------------- |
-|<img width="151" height="154" alt="image" src="https://github.com/user-attachments/assets/5fb9b036-88a6-487e-b8e8-8f3032f5b544" />
-|    ブロック    | ブロックを壊すことでスコアが上がります。ブロックの色で上昇量が変化。一部壊せないブロックも。|
-|<img width="32" height="34" alt="image" src="https://github.com/user-attachments/assets/f251eb2e-8cf9-415f-9892-683189bf4cdc" />
-|  ボール  | ボールは何かに当たったら反射します。バーが動いている時に当たると、反射する角度が変わるかも？ |
-| <img width="120" height="77" alt="image" src="https://github.com/user-attachments/assets/64d55d59-5739-459c-8837-a113d51197a7" />
-|  プレイヤーバー  | プレイヤーがタップした位置に移動します。下の△には当たり判定がないので注意。|
-| <img width="141" height="29" alt="image" src="https://github.com/user-attachments/assets/d63f844a-6734-4290-bf5b-8eb577965781" />
- | ライフ | 残機。３回ボールを落としたらゲームオーバーです。2回まではセーフ。  |
-|<img width="116" height="27" alt="image" src="https://github.com/user-attachments/assets/3396cb21-3da8-4369-8284-68b14656c492" />
-|     スコア     |  ブロック破壊で増える評価値です。特に時間とかは関係ありません。  |
+|<img width="151" height="154" alt="image" src="https://github.com/user-attachments/assets/5fb9b036-88a6-487e-b8e8-8f3032f5b544" />|    ブロック    | ブロックを壊すことでスコアが上がります。ブロックの色で上昇量が変化。一部壊せないブロックも。|
+|<img width="32" height="34" alt="image" src="https://github.com/user-attachments/assets/f251eb2e-8cf9-415f-9892-683189bf4cdc" />|  ボール  | ボールは何かに当たったら反射します。バーが動いている時に当たると、反射する角度が変わるかも？ |
+| <img width="120" height="77" alt="image" src="https://github.com/user-attachments/assets/64d55d59-5739-459c-8837-a113d51197a7" />|  プレイヤーバー  | プレイヤーがタップした位置に移動します。下の△には当たり判定がないので注意。|
+| <img width="141" height="29" alt="image" src="https://github.com/user-attachments/assets/d63f844a-6734-4290-bf5b-8eb577965781" /> | ライフ | 残機。３回ボールを落としたらゲームオーバーです。2回まではセーフ。  |
+|<img width="116" height="27" alt="image" src="https://github.com/user-attachments/assets/3396cb21-3da8-4369-8284-68b14656c492" />|     スコア     |  ブロック破壊で増える評価値です。特に時間とかは関係ありません。  |
 
 ## プログラム
 
