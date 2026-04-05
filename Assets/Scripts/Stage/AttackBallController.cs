@@ -1,132 +1,216 @@
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackBallController : MonoBehaviour
 {
+    // ボールの状態によって貫通などの処理を与える
+    public enum BallModeName
+    {
+        Nomel,  // 通常モード
+        Penetration,    // 貫通モード
+    }
+
+    public BallModeName ballMode = BallModeName.Nomel;
     public StageManager stage;
-    Rigidbody2D rbody;
-    Vector3 forceDirection;
-    Vector3 beforePosition;
+    public float speed = 7.0f;
+    public float moveValLimit = 0.5f;   // バーの移動量計算で使用する
+    public float revideVecVal = 0.5f;   // ボールの縦移動の最低値
+    public float accelLimit = 3.0f; // ボール加速の上限
 
-    float speed = 3.0f;
-    bool isReturnH = false;
-    bool isReturnV = false;
+    private PlayerController playerBar; // プレイヤーのバー情報
+    private Rigidbody2D rbody;  // 自身のRigidbody情報
+    private Vector2 forceVector; // ボールを動かす力の方向
 
+    // 反射判定をするオブジェクトのタグの元情報（配列）
     [SerializeField]
-    string[] targetTag = new string[3]{
+    private string[] defaultTargetTag = new string[3]{
+        "Block",
         "PlayerBar",
-        "Wall",
-        "Block"
+        "Wall"
     };
+    private List<string> targetTag = null;  // 反射判定をするオブジェクトのタグ情報（処理の際に増減させる）
 
-    private float blinkTime = 3.0f;
-    private bool isBlink = false;
+    private float blinkTime = 3.0f; // 生成後の点滅時間
+    private bool isBlink = true;    // 点滅管理フラグ
+    private bool isReturnH = false; // 横方向の反射フラグ
+    private bool isReturnV = false; // 縦方向の反射フラグ
+    private float accel = 1.0f; // 加速値
+
+    private float cntTime;  // 経過時間カウント用変数
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        transform.position = new Vector3(0, -1, 0);
-        isReturnH = false;
-        isReturnV = false;
-        rbody = GetComponent<Rigidbody2D>();
-        forceDirection = Vector3.down;
-        beforePosition = transform.position;
+        // 初期値設定
+        transform.position = new Vector3(0, -1, 0);     // ボールの初期位置
+        isReturnH = false;  // 横方向の反射判定
+        isReturnV = false;  // 縦方向の反射判定
+        rbody = GetComponent<Rigidbody2D>();    // ボール自体のRigidbody
+        forceVector = Vector2.down;     // ボールが移動する方向
+        targetTag = new List<string>(defaultTargetTag);     // ぶつかったときに反射するオブジェクトのタグ
+        accel = 1.0f;   // 加速度（１の場合はそのまま）
+        cntTime = 0;    // カウント用の変数
+        isBlink = true; // 点滅中か判定する変数。スタートした際はtrue
     }
 
     // Update is called once per frame
     void Update()
     {
-        // ゲーム中出なければ、何もせずに終了する
+        // ゲーム中でなければ、何もせずに終了する
         if (stage.InGame == false) return;
 
         // 開始後BlinkTimeの時間だけ点滅する。点滅している間は移動処理を実施しない。
         if (isBlink == true)
         {
-            if (Mathf.Sin(Time.time * 0.2f) > 0.5f)
+            // sinを使用して点滅させる
+            if (Mathf.Sin(Time.time * 10f) > 0)
             {
-                GetComponent<SpriteRenderer>().enabled = false;
+                // このオブジェクトと子オブジェクトを繰り返してすべて非表示にする
+                foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
+                {
+                    s.enabled = false;
+                }
             }
             else
             {
-                GetComponent<SpriteRenderer>().enabled |= true;
+                // このオブジェクトと子オブジェクトを繰り返しですべて表示する
+                foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
+                {
+                    s.enabled = true;
+                }
             }
 
-            blinkTime -= Time.deltaTime;
+            blinkTime -= Time.deltaTime;    // 点滅の残り時間を減らす
 
+            // 点滅の時間が終わった際に、表示させる
             if (blinkTime <= 0)
             {
+                foreach (SpriteRenderer s in GetComponentsInChildren<SpriteRenderer>())
+                {
+                    s.enabled = true;
+                }
                 isBlink = false;
-                GetComponent<SpriteRenderer>().enabled = true;
             }
             return;
         }
 
-        Debug.Log("forceDirection " + forceDirection);
-
-        if (isReturnH)
+        // 経過時間をカウント
+        cntTime += Time.deltaTime;
+        // 0.1秒カウントしたらリセットする
+        if (cntTime >= 0.1f)
         {
-            forceDirection.x *= -1;
-            isReturnH = false;
+            cntTime = 0;
         }
-        if (isReturnV)
-        {
-            forceDirection.y *= -1;
-            isReturnV = false;
-        }
-
-        beforePosition = transform.position;
     }
 
     void FixedUpdate()
     {
-        rbody.linearVelocity = forceDirection * speed;
+        if (isBlink) return;    // 点滅しているときは処理を実施しない
+
+        // 横方向の反射を実施
+        if (isReturnH)
+        {
+            forceVector.x *= -1;
+            isReturnH = false;
+        }
+        // 縦方向の反射を実施
+        if (isReturnV)
+        {
+            forceVector.y *= -1;
+            isReturnV = false;
+        }
+
+        // 力の方向×スピード×加速値　※加速値はブロック以外で反射した時に加算
+        rbody.linearVelocity = forceVector * speed * accel;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // 接触したオブジェクトのタグを変数に取得
         string tag = collision.gameObject.tag;
 
-        float moveNum = beforePosition.x - transform.position.x;
+        // Debug.Log("Collision " + collision.gameObject.tag + ">> " + targetTag.Contains(tag));
+        // Debug.Log("forceDirect : " + forceVector);
 
-        Debug.Log(collision.GetContact(0).point);
-
-        if (moveNum > 0)
-        {
-            //Debug.Log(moveNum);
-            forceDirection += new Vector3(moveNum * 10, 0, 0);
-
-            if (forceDirection.x > 1f) forceDirection = new Vector3(1f, forceDirection.y, 0);
-        }
-
-        Debug.Log("Collision " + collision.gameObject.tag + ">> " + targetTag.Contains(tag));
-
+        // 衝突したタグが反射対象のタグか確認する
         if (targetTag.Contains(tag))
         {
+            accel += 0.05f;  // 何かに当たった時に加速する
+            if (accel > accelLimit) accel = accelLimit; // 加速上限
+
+            // バーに当たった際に、バーの移動に応じて横方向に力を加える
+            if (tag == "PlayerBar")
+            {
+                float moveVal = playerBar.MoveVal;
+
+                // 移動値の上限・加減で設定
+                if (moveVal > moveValLimit) moveVal = moveValLimit;
+                if (moveVal < -(moveValLimit)) moveVal = -(moveValLimit);
+
+
+                // バーが動いていたら、ボールにも横方向に力を加える
+                if (Mathf.Abs(moveVal) > 0)
+                {
+                    //Debug.Log(moveNum);
+
+                    // バーの移動量に合わせて、ボールの方向を再定義する。
+                    forceVector = new Vector2(forceVector.x + (moveVal * 10), forceVector.y).normalized;
+                }
+
+                // 縦の移動量が少ないとnomalizedで0になってしまうため、最低値を保証する
+                if (Mathf.Abs(forceVector.y) < revideVecVal)
+                {
+                    // 元の関数を書き換えたくないので一時的に関数を作る
+                    float valY = Mathf.Abs(revideVecVal);     // 移動方向が上の場合はプラスの補正値を設定
+                    float valX = 1 - valY;
+                    if (forceVector.y < 0) valY *= -1;  // 移動方向が下の場合はマイナスの補正値を設定
+                    if (forceVector.x < 0) valX *= -1;  // 移動方向が左の場合はマイナスの補正値を設定
+
+                    forceVector = new Vector2(valX, valY).normalized;   // 補正した値で移動値を標準化
+                }
+            }
+
+            // ブロックに当たった場合
             if (tag == "Block")
             {
                 collision.gameObject.GetComponent<BlockController>().BreakBlock();
+                accel = 1.0f;   // ブロックに当たった時、加速をリセットする
             }
+
+            // 当たった位置を取得する（絶対座標を自身から見た座標にする）
             float diffY = collision.GetContact(0).point.y - transform.position.y;
             float diffX = collision.GetContact(0).point.x - transform.position.x;
-            if ((diffY > 0 && forceDirection.y > 0) || (diffY < 0 && forceDirection.y < 0))
-            {
-                isReturnV = true;
-            }
-            if ((diffX > 0 && forceDirection.x > 0) || (diffX < 0 && forceDirection.x < 0))
+
+            // 当たった方向と進行方向が同じ場合は反射フラグを立てる
+            if ((diffX > 0 && forceVector.x > 0) || (diffX < 0 && forceVector.x < 0))
             {
                 isReturnH = true;
             }
+            if ((diffY > 0 && forceVector.y > 0) || (diffY < 0 && forceVector.y < 0))
+            {
+                isReturnV = true;
+            }
+
+            SoundManager.Instance.PlaySE(SoundManager.Instance.seBallContact);  // ボールが反射するものに当たった時にSEを鳴らす
         }
 
+        // タグ「Dead」に触れたらボールが落ちた判定
         if (tag == "Dead")
         {
-            stage.BallDrop();
-            Destroy(gameObject);
+            stage.BallDrop();   // ステージマネージャーのボールが落ちたメソッドを実行
+            Destroy(gameObject);    // このオブジェクトを破棄
         }
     }
 
+    // 生成時にステージマネージャーを設定する用のメソッド
     public void SetStageManager(StageManager sm)
     {
         stage = sm;
+    }
+
+    // 生成時にバーを設定する用のメソッド
+    public void SetPlayerBar(PlayerController pc)
+    {
+        playerBar = pc;
     }
 }
